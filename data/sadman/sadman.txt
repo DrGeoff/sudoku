@@ -1,0 +1,4 @@
+The sdk files in this directory have been downloaded from 
+
+http://www.sadmansoftware.com/sudoku
+

@@ -1,0 +1,5 @@
+All the examples in this directory came from
+
+http://www-lor.int-evry.fr/~berthier/HLS/Braids.html
+
+These are a collection of hard problems

@@ -1,0 +1,81 @@
+SDK files are saved Sudoku puzzles in SadMan Sudoku format. They can be created and opened by SadMan Sudoku and also some other Sudoku applications.
+
+The files are in a simple text file format, which means that if you simply want to see the puzzle, you can even open them using Windows Notepad.
+
+The file may simply consist of 81 characters in a 9 x 9 array, or there may be up to five sections of data giving header information, the initial puzzle, the current state of a partially solved puzzle, any pencil marks, and any cell colours.
+
+The various header fields are identified by a # followed by a single character:
+
+#A - Author
+#C - Comment
+#D - Description
+#B - Date
+#S - Source
+#U - URL
+#L - Level or Grade
+#N - Number of solutions
+#H - Number of clues
+
+Format example 1, minimal puzzle
+
+6.......7
+....9..2.
+3.1..259.
+8....7.13
+....8....
+76.3....8
+.782..1.6
+.5..3....
+2.......9
+Format example 2, everything:
+
+#A SadMan Software
+#D Straightforward enough
+#C watch for the naked pair
+#B 27/08/2009
+#S SadMan Software Sudoku
+#L Mild
+#U http://www.sadmansoftware.com/sudoku/
+#N 1
+#H 27
+[Puzzle]
+6.......7
+....9..2.
+3.1..259.
+8....7.13
+....8....
+76.3....8
+.782..1.6
+.5..3....
+2.......9
+[State]
+6.....387
+547893621
+381..2594
+8....7.13
+....8.765
+76.3...48
+.782..136
+.5..3..72
+2......59
+[PencilMarks]
+,29,29,145,145,145,,,
+,,,,,,,,
+,,,67,67,,,,
+,29,2459,4569,2456,,29,,
+149,1239,2349,149,,149,29,,
+,,259,,125,159,29,,
+49,,,,45,459,,,
+149,,469,1469,,14689,48,,
+,13,346,1467,1467,1468,48,,
+[Colours]
+.........
+.........
+.........
+.2111.2..
+.........
+.........
+.........
+.........
+.........
+
