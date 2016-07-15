@@ -60,7 +60,7 @@ bool do_grid_function( Grid& grid, Function func, const Constraint::Type type )
 	if(changedCells.size() > 0)
 	{ 
 		cout << "Apply " << func.name() << " rule to " << Constraint::typeToStr( type ) << "s.\n"; 
-		//copy (changedCells.begin(), changedCells.end(), ostream_iterator<size_t> (cout, " "));
+		//copy (changedCells.begin(), changedCells.end(), ostream_iterator<std::size_t> (cout, " "));
 		cout << explanation << endl << grid << endl;
 		didWork = true;
 	}
@@ -86,7 +86,7 @@ bool do_function( Grid& grid, Function func, const Constraint::Type type )
 	if(changedCells.size() > 0)
 	{ 
 		cout << "Apply " << func.name() << " rule to " << Constraint::typeToStr( type ) << "s.\n"; 
-		//copy (changedCells.begin(), changedCells.end(), ostream_iterator<size_t> (cout, " "));
+		//copy (changedCells.begin(), changedCells.end(), ostream_iterator<std::size_t> (cout, " "));
 		cout << explanation << endl << grid << endl;
 		didWork = true;
 	}
@@ -145,7 +145,7 @@ int main( int argc, char* argv[] )
 		return 0;
 	}
 
-	size_t countRulesApplied = 0;
+	std::size_t countRulesApplied = 0;
 	bool keepSearching = false;
 	while( do_function( grid, UniquePerConstraintRegion() ) ){ keepSearching = true; ++countRulesApplied; }
 	
@@ -197,7 +197,7 @@ int main( int argc, char* argv[] )
 		{ 
 		   /*
 			cout << "Grid is inconsistent or incomplete.  Inconsistent/Incomplete cells are: ";
-			for( vector<size_t>::const_iterator it = inconsistentCells.begin(); it != inconsistentCells.end(); ++it )
+			for( vector<std::size_t>::const_iterator it = inconsistentCells.begin(); it != inconsistentCells.end(); ++it )
 			{
 				cout << "index = " << *it << ' ' << grid.cells[*it].row() << ' ' << grid.cells[*it].column() << ' ' << grid.cells[*it].square() << "\t";
 			}

@@ -60,7 +60,7 @@ struct IntersectReject
 	{
 		// First build up a count of the various candidates
 		// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '1' - '9'.
-		vector<size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
+		vector<std::size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
 		
 		for( char candidateValue = '1'; candidateValue != ':'; ++candidateValue )  // Check each of the numbers to see if it is possible to intersect-reject it.
 		{			
@@ -96,13 +96,13 @@ struct IntersectReject
 					// Need to be careful not to eliminate from cells in the square( or line in the complementary case) that 
 					// are not part of the "reject"
 					bool didWork = false;
-					const size_t preserveIndexNum = Constraint::calculateConstantIndex( cr );
+					const std::size_t preserveIndexNum = Constraint::calculateConstantIndex( cr );
 					const Constraint::Type constraintType = Constraint::calculateType( cr ); 
 					for( ConstraintRegion::iterator crIt2 = pNeedFixingConstraintRegion->begin(); crIt2 != pNeedFixingConstraintRegion->end(); ++crIt2 )						
 					{
 						if( (*crIt2)->index(constraintType) != preserveIndexNum )
 						{
-							const size_t candidateSizeBeforeRemoval = (*crIt2)->candidates().size();
+							const std::size_t candidateSizeBeforeRemoval = (*crIt2)->candidates().size();
 							(*crIt2)->candidates().remove(candidateValue);
 							
 							if( candidateSizeBeforeRemoval > (*crIt2)->candidates().size() )
@@ -122,7 +122,7 @@ struct IntersectReject
 							oss << (*cellIt)->index() << " ";
 						}
 						
-						const size_t removalRegionIndex = Constraint::calculateConstantIndex(*pNeedFixingConstraintRegion);
+						const std::size_t removalRegionIndex = Constraint::calculateConstantIndex(*pNeedFixingConstraintRegion);
 						const Constraint::Type removalRegionType = Constraint::calculateType(*pNeedFixingConstraintRegion);
 						oss << "are the cells which must contain the candidate value "  << candidateValue 
 						<< " for " << Constraint::typeToStr(removalRegionType) << " " << removalRegionIndex 
@@ -145,7 +145,7 @@ private:
 		const Constraint::Type crType = Constraint::calculateType( cr );		
 		if( Constraint::square != crType )  // The constraint region is a row or a column so the intersect must be with a square
 		{
-			const size_t squareOfFirstCell = pointorsToCellsWithCandidateValue[0]->square();
+			const std::size_t squareOfFirstCell = pointorsToCellsWithCandidateValue[0]->square();
 			if( pointorsToCellsWithCandidateValue[1]->square() == squareOfFirstCell )
 			{
 				//cout << "Square of first cell (index = " <<pointorsToCellsWithCandidateValue[0]->index() << ") matches square of second cell (index = " <<pointorsToCellsWithCandidateValue[1]->index() << endl;
@@ -160,8 +160,8 @@ private:
 		}
 		else // The constraint region is a square so we have to be careful to handle either a row or column intersection
 		{
-			const size_t rowOfFirstCell = pointorsToCellsWithCandidateValue[0]->row();
-			const size_t columnOfFirstCell = pointorsToCellsWithCandidateValue[0]->column();
+			const std::size_t rowOfFirstCell = pointorsToCellsWithCandidateValue[0]->row();
+			const std::size_t columnOfFirstCell = pointorsToCellsWithCandidateValue[0]->column();
 			
 			if( pointorsToCellsWithCandidateValue[1]->row() == rowOfFirstCell )
 			{

@@ -80,11 +80,11 @@ struct MultiValueChains
 							{
 								if( pStartCell->index(constraintType) == pEndCell->index(constraintType) )
 								{ 
-									set<size_t> preserveIndexes; 
+									set<std::size_t> preserveIndexes; 
 									preserveIndexes.insert( pStartCell->index() );
 									preserveIndexes.insert( pEndCell->index() );							
 									
-									const size_t matchIndex = pStartCell->index(constraintType); 
+									const std::size_t matchIndex = pStartCell->index(constraintType); 
 									ConstraintRegion& eliminationRegion = grid.get(constraintType)[ matchIndex ];
 									if( Constraint::eliminate( eliminationRegion, *itCandidateValue, changedCells, preserveIndexes, Constraint::grid ) )
 									{

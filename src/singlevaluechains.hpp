@@ -56,9 +56,9 @@ private:
 		if( allChains.size() < 2 ) { return; }
 		
 		// Look for any intersections between a chains
-		for( size_t allChains0_index = 0; allChains0_index != allChains.size(); ++allChains0_index )
+		for( std::size_t allChains0_index = 0; allChains0_index != allChains.size(); ++allChains0_index )
 		{
-			for( size_t allChains1_index = allChains0_index + 1; allChains1_index < allChains.size(); ++allChains1_index )
+			for( std::size_t allChains1_index = allChains0_index + 1; allChains1_index < allChains.size(); ++allChains1_index )
 			{				
 				Chain& chain0 = allChains[allChains0_index];
 				Chain& chain1 = allChains[allChains1_index];
@@ -142,7 +142,7 @@ private:
 		
 		// A bi-directional chain will have a frequency of 2 for the candidate value.  A uni-directional link will have a frequency > 2.
 		// A chain can only have a uni-directional link as its last element
-		vector<size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
+		vector<std::size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
 		
 		if( frequency[candidateValue] >= 2 )
 		{

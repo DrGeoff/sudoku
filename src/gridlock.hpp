@@ -54,12 +54,12 @@ struct Gridlock
 	{
 		// First build up a count of the various candidates
 		// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '1' - '9'.
-		vector<size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
+		vector<std::size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
 		
 		// Check for an NxN gridlock. (in the code I will use nn rather than n)
 		// Note that we can stop at 4x4 gridlock (because if there is a 5x5 then I think there exists a complementary 4x4 gridlock [should verify this])
 		// Also note that there can be more than one gridlock in a region. Need to be careful of that.
-		for( size_t nn = 2; nn != 5; ++nn )
+		for( std::size_t nn = 2; nn != 5; ++nn )
 		{
 			// Loop over the candidate value look for a potential gridlock
 			for( char candidateValue = '1'; candidateValue != ':'; ++candidateValue )
@@ -73,13 +73,13 @@ struct Gridlock
 	}
 
 private:	
-	vector<const ConstraintRegion*> findPossibleConstraintRegions( const size_t nn, const char candidateValue, const vector<ConstraintRegion>& allCR )
+	vector<const ConstraintRegion*> findPossibleConstraintRegions( const std::size_t nn, const char candidateValue, const vector<ConstraintRegion>& allCR )
 	{
 		vector<const ConstraintRegion*> possibleConstraintRegions;
 		for( vector<ConstraintRegion>::const_iterator regionsIt = allCR.begin(); regionsIt != allCR.end(); ++regionsIt )
 		{
 			const ConstraintRegion& cr2 = *regionsIt;
-			const vector<size_t> frequency2 = Constraint::buildCandidateFrequencyTable( cr2 );				
+			const vector<std::size_t> frequency2 = Constraint::buildCandidateFrequencyTable( cr2 );				
 			if( frequency2[candidateValue] > 1 && frequency2[candidateValue] <= nn )
 			{
 				//cout << "Adding to possible constraint regions: " << Constraint::calculateConstantIndex( cr2 ) << endl;
@@ -89,7 +89,7 @@ private:
 		return possibleConstraintRegions;
 	}
 	
-    void doNxNGridlockForValue( const size_t nn, const char candidateValue, ConstraintRegion& cr, Grid& grid, set<Cell*>& changedCells, set<Cell*>& explanatoryCells, string& explanation )
+    void doNxNGridlockForValue( const std::size_t nn, const char candidateValue, ConstraintRegion& cr, Grid& grid, set<Cell*>& changedCells, set<Cell*>& explanatoryCells, string& explanation )
 	{ 
 		const Constraint::Type constraintType = Constraint::calculateType( cr );  // Are we trying to find matching columns or rows?
 		const Constraint::Type oppositeType = Constraint::oppositeType(constraintType); // Calculate the opposite row/column type from "cr".  That is if "cr" is a row then opposite is column.
@@ -105,9 +105,9 @@ private:
 			// Could have picked up too many possibilities so now check each of the possible combination of constraint regions found.
 			Combinator<const ConstraintRegion*> combinator( possibleConstraintRegions, nn );
 			
-			set<size_t> preserveIndexes;  // This is useful later so that we don't eliminate data that forms part of the NxN Gridlock
-			set<size_t> oppositeIndexes;  // Allowed to delete from the columns/rows with these indexes
-			size_t loop = 0;
+			set<std::size_t> preserveIndexes;  // This is useful later so that we don't eliminate data that forms part of the NxN Gridlock
+			set<std::size_t> oppositeIndexes;  // Allowed to delete from the columns/rows with these indexes
+			std::size_t loop = 0;
 			bool found = false;
 			while( loop < combinator.size() && !found )
 			{
@@ -121,13 +121,13 @@ private:
 				{
 					assert( *regionsPtrIt != 0 );
 					const ConstraintRegion& cr2 = **regionsPtrIt;
-					const size_t cr2ConstantIndex = Constraint::calculateConstantIndex( cr2 );
-					const vector<size_t> frequency2 = Constraint::buildCandidateFrequencyTable( cr2 );				
+					const std::size_t cr2ConstantIndex = Constraint::calculateConstantIndex( cr2 );
+					const vector<std::size_t> frequency2 = Constraint::buildCandidateFrequencyTable( cr2 );				
 					if( frequency2[candidateValue] > 1 && frequency2[candidateValue] <= nn )
 					{
 						preserveIndexes.insert( cr2ConstantIndex );
 						
-						set<size_t> moreOppositeIndexes = Constraint::findCandidateValue( cr2, candidateValue, oppositeType );
+						set<std::size_t> moreOppositeIndexes = Constraint::findCandidateValue( cr2, candidateValue, oppositeType );
 						copy( moreOppositeIndexes.begin(), moreOppositeIndexes.end(), inserter(oppositeIndexes,oppositeIndexes.end()) );
 					}
 				}
@@ -145,7 +145,7 @@ private:
 				// For each opposite region type remove the candidate, being careful to preserve the gridlock data
 				bool didWork = false;
 				vector<ConstraintRegion>& eliminationRegions = grid.get( oppositeType );
-				for( set<size_t>::const_iterator opIndexIt = oppositeIndexes.begin(); opIndexIt != oppositeIndexes.end(); ++opIndexIt )
+				for( set<std::size_t>::const_iterator opIndexIt = oppositeIndexes.begin(); opIndexIt != oppositeIndexes.end(); ++opIndexIt )
 				{
 					ConstraintRegion& cr3 = eliminationRegions[ *opIndexIt ];
 					didWork |= Constraint::eliminate( cr3, candidateValue, changedCells, preserveIndexes, constraintType );
@@ -156,12 +156,12 @@ private:
 					ostringstream oss;
 					oss << nn << "x" << nn << " gridlock on candidate value = " << candidateValue
 						<< " for " << Constraint::typeToStr( constraintType ) << "s";
-					for( set<size_t>::const_iterator sit = preserveIndexes.begin(); sit != preserveIndexes.end(); ++sit )
+					for( set<std::size_t>::const_iterator sit = preserveIndexes.begin(); sit != preserveIndexes.end(); ++sit )
 					{
 						oss << " " << *sit;
 					}
 					oss << ". Removing candidate value from " << Constraint::typeToStr( oppositeType ) << "s";
-					for( set<size_t>::const_iterator opIndexIt = oppositeIndexes.begin(); opIndexIt != oppositeIndexes.end(); ++opIndexIt )
+					for( set<std::size_t>::const_iterator opIndexIt = oppositeIndexes.begin(); opIndexIt != oppositeIndexes.end(); ++opIndexIt )
 					{
 						oss << " " << *opIndexIt;
 					}

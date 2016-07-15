@@ -42,7 +42,7 @@ namespace Sudoku {
  *
  *   This algorithm is a generalisation of OnlySpot
  */
-struct HiddenTuples : public unary_function< ConstraintRegion, vector<size_t> >
+struct HiddenTuples : public unary_function< ConstraintRegion, vector<std::size_t> >
 {
 	const char* name() const { return "Hidden Tuples"; }
 	static const bool usesGrid = false;
@@ -51,12 +51,12 @@ struct HiddenTuples : public unary_function< ConstraintRegion, vector<size_t> >
 	{
 		// First build up a count of the various candidates
 		// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '1' - '9'.
-		vector<size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
+		vector<std::size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
 		
 		// Now see if it is possible to make 'n' n-tuples (in the code I will use nn rather than n)
 		// Note that we can stop at 4-tuples (because if there is a 5-tuple then the given 4-tuple will complement it)
 		// Also note that there can be more than one n-tuple in a region. Need to be careful of that.
-		for( size_t nn = 2; nn != 5; ++nn )
+		for( std::size_t nn = 2; nn != 5; ++nn )
 		{
 			// Gather together the possible values that could constitute a n-tuple
 			// For example, if the values 6 and 7 have a count of 2 then they could
@@ -76,7 +76,7 @@ struct HiddenTuples : public unary_function< ConstraintRegion, vector<size_t> >
 				// Now check each of the combinations.
 				Combinator<char> combinator( possibleValuesForNTuple, nn );
 				
-				size_t loop = 0;
+				std::size_t loop = 0;
 				while( loop < combinator.size() )
 				{
 					// Create a n-tuple to test for the existence of

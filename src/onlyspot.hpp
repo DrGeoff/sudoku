@@ -39,7 +39,7 @@ struct OnlySpot
 	{
 		// First build up a count of the various candidates
 		// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '1' - '9'.
-		vector<size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
+		vector<std::size_t> frequency = Constraint::buildCandidateFrequencyTable( cr );
 
 		// Check if the count is 1 for any of them
 		for( char candidateValue = '1'; candidateValue != ':'; ++candidateValue )

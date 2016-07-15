@@ -89,7 +89,7 @@ string Constraint::typeToStr( const Constraint::Type type )
 
 
 /// If the constraint region is a row then return the row number.  Similarly for columns and squares.
-size_t Constraint::calculateConstantIndex( const ConstraintRegion& cr )
+std::size_t Constraint::calculateConstantIndex( const ConstraintRegion& cr )
 {
 	Type regionType = calculateType( cr );
 	return cr[0]->index( regionType );
@@ -97,10 +97,10 @@ size_t Constraint::calculateConstantIndex( const ConstraintRegion& cr )
 
 
 /// Return a frequency table of the candidates in the given constraint region	
-vector<size_t> Constraint::buildCandidateFrequencyTable( const ConstraintRegion& cr )
+vector<std::size_t> Constraint::buildCandidateFrequencyTable( const ConstraintRegion& cr )
 {
 	// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '1' - '9'.
-	vector<size_t> frequency(':');  
+	vector<std::size_t> frequency(':');  
 	
 	for( ConstraintRegion::const_iterator crIt = cr.begin(); crIt != cr.end(); ++crIt )
 	{
@@ -114,10 +114,10 @@ vector<size_t> Constraint::buildCandidateFrequencyTable( const ConstraintRegion&
 }	
 
 /// Return a frequency table of the candidates in the given constraint region	
-vector<size_t> Constraint::buildValueFrequencyTable( const ConstraintRegion& cr )
+vector<std::size_t> Constraint::buildValueFrequencyTable( const ConstraintRegion& cr )
 {
 	// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '0' - '9'.
-	vector<size_t> frequency(':');  
+	vector<std::size_t> frequency(':');  
 	for( ConstraintRegion::const_iterator crIt = cr.begin(); crIt != cr.end(); ++crIt )
 	{
 		++frequency[(*crIt)->value()];  	
@@ -142,9 +142,9 @@ vector<Cell*> Constraint::findCandidateValue( const ConstraintRegion& cr, const 
 }
 
 /// Search the given constraint region and return the row/column/square indexes (specified by indexType) containing the given candidate value
-set<size_t> Constraint::findCandidateValue( const ConstraintRegion& cr, const char candidateValue, const Type indexType  )
+set<std::size_t> Constraint::findCandidateValue( const ConstraintRegion& cr, const char candidateValue, const Type indexType  )
 {
-	set<size_t> indexes;
+	set<std::size_t> indexes;
 	for( ConstraintRegion::const_iterator crIt = cr.begin(); crIt != cr.end(); ++crIt )
 	{
 		const Cell::CandidateContainer& currentCandidates = (*crIt)->candidates();
@@ -160,12 +160,12 @@ set<size_t> Constraint::findCandidateValue( const ConstraintRegion& cr, const ch
 bool Constraint::eliminate( ConstraintRegion& cr
 						  , const char candidateValue
 						  , set<Cell*>& changedCells 
-						  , const set<size_t>& preserveIndexes
+						  , const set<std::size_t>& preserveIndexes
 			              , const Constraint::Type preserveRegionType )
 {
 	/*
 	cout << "Preserve indexes are : ";
-	std::copy(preserveIndexes.begin(), preserveIndexes.end(), std::ostream_iterator<size_t>(std::cout,","));
+	std::copy(preserveIndexes.begin(), preserveIndexes.end(), std::ostream_iterator<std::size_t>(std::cout,","));
 	cout << endl;
 	*/
 	bool didWork = false;
@@ -175,7 +175,7 @@ bool Constraint::eliminate( ConstraintRegion& cr
 		//cout << "Examining cell index " << (*crIt)->index() << " with preserve region index " << (*crIt)->index(preserveRegionType) << endl;
 		if( find( preserveIndexes.begin(), preserveIndexes.end(), (*crIt)->index(preserveRegionType) ) == preserveIndexes.end() )
 		{
-			const size_t candidateSizeBeforeRemoval = (*crIt)->candidates().size();
+			const std::size_t candidateSizeBeforeRemoval = (*crIt)->candidates().size();
 			(*crIt)->candidates().remove(candidateValue);
 			
 			if((*crIt)->candidates().empty())
@@ -210,7 +210,7 @@ bool Constraint::eliminate( ConstraintRegion& cr
 		//cout << "Examining cell index " << (*crIt)->index() << endl;
 		if( find( preserveCells.begin(), preserveCells.end(), *crIt ) == preserveCells.end() )
 		{
-			const size_t candidateSizeBeforeRemoval = (*crIt)->candidates().size();
+			const std::size_t candidateSizeBeforeRemoval = (*crIt)->candidates().size();
 			(*crIt)->candidates().remove(candidateValue);
 			
 			if((*crIt)->candidates().empty())

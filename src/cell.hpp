@@ -22,7 +22,7 @@ class Cell
 public:
     typedef std::list<char> CandidateContainer;
     
-    Cell( const size_t cellIndex )
+    Cell( const std::size_t cellIndex )
         : initial_( false )
         , cellIndex_( cellIndex )
 		, row_( cellIndex/9 )   // Note that we are relying on the round down of integer division.
@@ -31,8 +31,8 @@ public:
 		// Note 1: the use of zero based indicies for the rows, columns, and squares
 		// Note 2: I follow the usual C 2D array format of contiguous memory representing rows. 
 		
-		const size_t squareRow = row_ / 3;
-		const size_t squareColumn = column_ / 3;
+		const std::size_t squareRow = row_ / 3;
+		const std::size_t squareColumn = column_ / 3;
 		square_ = 3*squareRow + squareColumn;
 
 		// A cell will be initialised with the full set of possible candidates (i.e., 1,2,3,...,9)
@@ -46,11 +46,11 @@ public:
     CandidateContainer& candidates()             { return candidates_; }
     const CandidateContainer& candidates() const { return candidates_; }
 
-	size_t index()  const { return cellIndex_; }
-	size_t row()    const {	return row_; }
-	size_t column() const { return column_; }
-	size_t square() const {	return square_; }
-	size_t index( Constraint::Type type ) const
+	std::size_t index()  const { return cellIndex_; }
+	std::size_t row()    const {	return row_; }
+	std::size_t column() const { return column_; }
+	std::size_t square() const {	return square_; }
+	std::size_t index( Constraint::Type type ) const
 	{
 		switch( type )
 		{
@@ -117,10 +117,10 @@ public:
 private:
     CandidateContainer candidates_;   // What are the remaining candidate values for this cell.  If only one candidate is left, that is the answer
     bool initial_;                    // Is the value in this cell the one specified in the initial problem
-    size_t cellIndex_;                // Where in the overall Sudoku grid does this cell lie (numbers are 0 to 80, top left cell is 0, bottom right is 80, proceeding along the row)
-    size_t row_;                      // Finer grained location. What row does this cell belong to.  Note the zero based index.
-	size_t column_;                   // Finer grained location. What column does this cell belong to.  Note the zero based index.
-	size_t square_;                   // Finer grained location. What square does this cell belong to.  Note the zero based index.
+    std::size_t cellIndex_;                // Where in the overall Sudoku grid does this cell lie (numbers are 0 to 80, top left cell is 0, bottom right is 80, proceeding along the row)
+    std::size_t row_;                      // Finer grained location. What row does this cell belong to.  Note the zero based index.
+	std::size_t column_;                   // Finer grained location. What column does this cell belong to.  Note the zero based index.
+	std::size_t square_;                   // Finer grained location. What square does this cell belong to.  Note the zero based index.
 };
 
 

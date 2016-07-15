@@ -49,25 +49,25 @@ struct Constraint
 	static string typeToStr( const Constraint::Type type );
 	
 	/// If the constraint region is a row then return the row number.  Similarly for columns and squares. Undefined for grid.
-	static size_t calculateConstantIndex( const ConstraintRegion& cr );	
+	static std::size_t calculateConstantIndex( const ConstraintRegion& cr );	
 	
 	/// Return a frequency table of the candidates in the given constraint region	
-	static vector<size_t> buildCandidateFrequencyTable( const ConstraintRegion& cr );
+	static vector<std::size_t> buildCandidateFrequencyTable( const ConstraintRegion& cr );
 	
 	/// Return a frequency table of the values in the given constraint region	
-	static vector<size_t> buildValueFrequencyTable( const ConstraintRegion& cr );
+	static vector<std::size_t> buildValueFrequencyTable( const ConstraintRegion& cr );
 	
 	/// Search the given constraint region and return pointers to cells containing the given candidate value
 	static vector<Cell*> findCandidateValue( const ConstraintRegion& cr, const char candidateValue );
 	
 	/// Search the given constraint region and return the row/column/square/grid indexes (specified by indexType) containing the given candidate value
-	static set<size_t> findCandidateValue( const ConstraintRegion& cr, const char candidateValue, const Type indexType  );
+	static set<std::size_t> findCandidateValue( const ConstraintRegion& cr, const char candidateValue, const Type indexType  );
 	
 	/// Go through given constraint region and eliminate the candidate value, being careful to leave the preserved ones. 
 	static bool eliminate( ConstraintRegion& cr
 						 , const char candidateValue
 						 , set<Cell*>& changedCells 
-						 , const set<size_t>& preserveIndexes = set<size_t>()
+						 , const set<std::size_t>& preserveIndexes = set<std::size_t>()
 						 , const Type preserveRegionType = square );
 	
 	/// Go through given constraint region and eliminate the candidate value, being careful to leave the preserved ones. 

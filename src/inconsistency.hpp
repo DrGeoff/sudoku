@@ -40,7 +40,7 @@ struct Inconsistency
 	{
 		// First build up a count of the various candidates
 		// Create a vector of many elements initialised to zero. Despite the waste of memory, we wont use the first n element, only using '0' - '9'.
-		vector<size_t> frequency = Constraint::buildValueFrequencyTable( cr );
+		vector<std::size_t> frequency = Constraint::buildValueFrequencyTable( cr );
 		
 		// Now check if there are too many of any given value
 		for( char value = (testForZero_?'0':'1'); value != ':'; ++value ) 

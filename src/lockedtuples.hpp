@@ -28,7 +28,7 @@ struct LockedTuples
 		// Find if a locked pair exists in this constraint region
 		for( ConstraintRegion::iterator crIt = cr.begin(); crIt != cr.end(); ++crIt )
 		{
-			const size_t tupleSize = (*crIt)->candidates().size();
+			const std::size_t tupleSize = (*crIt)->candidates().size();
 			if( tupleSize >= 2 && tupleSize <= 4 )
 			{
 				//cout << "Cell " << (*crIt)->index() << " has " << tupleSize << " candidates.\t";
