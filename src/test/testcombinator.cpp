@@ -24,7 +24,7 @@ int main( int argc, char* argv[] )
 	cout << endl;
 	*/
 	
-	Combinator combinator( possibilities, 3 );
+	Combinator<char> combinator( possibilities, 3 );
 	
 	cout << "5C2 = " << combinator.size() << endl;
 	
