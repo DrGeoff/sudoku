@@ -98,9 +98,9 @@ template< typename Function >
 bool do_function( Grid& grid, Function func )
 {
 	bool didWork = false;
+	didWork |= do_function( grid, func, Constraint::square );
 	didWork |= do_function( grid, func, Constraint::row );
 	didWork |= do_function( grid, func, Constraint::column );
-	didWork |= do_function( grid, func, Constraint::square );
 		
 	return didWork;
 }
