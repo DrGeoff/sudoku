@@ -42,7 +42,7 @@ namespace Sudoku {
  *
  *   This algorithm is a generalisation of OnlySpot
  */
-struct HiddenTuples : public unary_function< ConstraintRegion, vector<std::size_t> >
+struct HiddenTuples 
 {
 	const char* name() const { return "Hidden Tuples"; }
 	static const bool usesGrid = false;

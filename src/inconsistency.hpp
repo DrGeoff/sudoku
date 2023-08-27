@@ -9,9 +9,6 @@
 #ifndef INCONSISTENCY_HPP_20100415
 #define INCONSISTENCY_HPP_20100415
 
-#include <functional>
-using std::unary_function;
-
 #include <vector>
 using std::vector;
 

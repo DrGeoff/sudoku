@@ -39,15 +39,15 @@ struct XYZWing
 		assert( Constraint::calculateType(cr) == Constraint::square );
 		
 		Cell* pXYZCell = 0;
-		while( pXYZCell = findXYZ( cr, pXYZCell ) )
+		while( (pXYZCell = findXYZ( cr, pXYZCell )) )
 		{
 			// Without loss of generality we can impose the condition that the XZ cell lies in the same square as the XYZ cell
 			Cell* pXZCell = 0;
-			while( pXZCell = findXZ( cr, pXYZCell, pXZCell ) )
+			while( (pXZCell = findXZ( cr, pXYZCell, pXZCell )) )
 			{
 				// The YZ cell must now _not_ be in the same square as the XYZ cell (if it was this would be a locked triple instead)
 				Cell* pYZCell = 0;
-				while( pYZCell=findYZ( grid, pXYZCell, pXZCell, pYZCell ) )
+				while( (pYZCell = findYZ( grid, pXYZCell, pXZCell, pYZCell )) )
 				{
 					// Figure out the actual value of Z
 					vector< char > intersection;
