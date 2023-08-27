@@ -6,6 +6,7 @@
 using std::ostream;
 
 #include <cassert>
+#include <stdexcept>
 
 #include "constraintregion.hpp"
 
@@ -58,7 +59,7 @@ public:
 			case Constraint::column : return column_;    break;
 			case Constraint::square : return square_;    break;
 			case Constraint::grid   : return cellIndex_; break;
-			default:                  assert(false);     break;
+            default: throw std::runtime_error("Impossible constraint type given");
 		}
 	}
 	
