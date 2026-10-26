@@ -2,11 +2,13 @@
 #define CELL_H_20100327
 
 #include <list>
-#include <iostream>
-using std::ostream;
 
 #include <cassert>
+#include <cstddef>
+#include <format>
+#include <iostream>
 #include <stdexcept>
+#include <string>
 
 #include "constraintregion.hpp"
 
@@ -21,9 +23,9 @@ namespace Sudoku {
 class Cell
 {
 public:
-    typedef std::list<char> CandidateContainer;
+    using CandidateContainer = std::list<char>;
     
-    Cell( const std::size_t cellIndex )
+    explicit Cell( std::size_t cellIndex )
         : initial_( false )
         , cellIndex_( cellIndex )
 		, row_( cellIndex/9 )   // Note that we are relying on the round down of integer division.
@@ -37,10 +39,7 @@ public:
 		square_ = 3*squareRow + squareColumn;
 
 		// A cell will be initialised with the full set of possible candidates (i.e., 1,2,3,...,9)
-		for( char value = '1'; value != ':'; ++value )  // ':' is the character after '9' in ascii
-        {
-            candidates_.push_back( value );
-        }
+		candidates_ = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
     }
 
     // Accessor
@@ -55,26 +54,30 @@ public:
 	{
 		switch( type )
 		{
-			case Constraint::row    : return row_;       break;
-			case Constraint::column : return column_;    break;
-			case Constraint::square : return square_;    break;
-			case Constraint::grid   : return cellIndex_; break;
-            default: throw std::runtime_error("Impossible constraint type given");
+			case Constraint::Type::row    : return row_;       break;
+			case Constraint::Type::column : return column_;    break;
+			case Constraint::Type::square : return square_;    break;
+			case Constraint::Type::grid   : return cellIndex_; break;
 		}
+		throw std::logic_error( "impossible constraint type given" );
 	}
 	
 
     // Reduce the set of candidates to the specifed value
-    void initial( const char value )
+    void initial( char value )
     {
+        if( value < '1' || value > '9' )
+        {
+            throw std::invalid_argument( std::format( "invalid cell value '{}': expected '1' to '9'", value ) );
+        }
         initial_ = true;
         candidates_.clear();  // remove all the unnecessary candidates.
         candidates_.push_back( value );
     }
     
-    char initial() { return initial_; }
+    bool initial() const { return initial_; }
     
-    char value()
+    char value() const
     {
 		assert( !candidates_.empty() );
         if( candidates_.size() > 1 )
@@ -87,29 +90,33 @@ public:
         }
     }
 
-	ostream& writeCellLocationInformation( ostream& os )
+	std::ostream& writeCellLocationInformation( std::ostream& os ) const
 	{
 		os << '(' << index() << ' ' << row() << ' ' << column() << ' ' << square() << ") ";	
 		return os;
 	}
 
-	ostream& writeCellShortLocationInformation( ostream& os )
+	std::ostream& writeCellShortLocationInformation( std::ostream& os ) const
 	{
 		os << '(' << row() << ',' << column() << ") ";	
 		return os;
 	}
 	
-	ostream& writeCandidateValues( ostream& os )
+	std::ostream& writeCandidateValues( std::ostream& os ) const
 	{
-		CandidateContainer::const_iterator it = candidates().begin();
-		const CandidateContainer::const_iterator endIt = candidates().end();
-		assert( it != endIt );
+		const CandidateContainer& currentCandidates = candidates();
+		assert( !currentCandidates.empty() );
 		
-		os << '{' << *it++;
-	    
-		for( ; it != endIt; ++it )
+		os << '{';
+		bool first = true;
+		for( const char candidate : currentCandidates )
 		{
-			os << ' ' << *it;
+			if( !first )
+			{
+				os << ' ';
+			}
+			os << candidate;
+			first = false;
 		}
         os << "} ";				
 		return os;
@@ -120,33 +127,28 @@ private:
     bool initial_;                    // Is the value in this cell the one specified in the initial problem
     std::size_t cellIndex_;                // Where in the overall Sudoku grid does this cell lie (numbers are 0 to 80, top left cell is 0, bottom right is 80, proceeding along the row)
     std::size_t row_;                      // Finer grained location. What row does this cell belong to.  Note the zero based index.
-	std::size_t column_;                   // Finer grained location. What column does this cell belong to.  Note the zero based index.
+	std::size_t column_;                   // Finer grained location.  What column does this cell belong to.  Note that the zero based index.
 	std::size_t square_;                   // Finer grained location. What square does this cell belong to.  Note the zero based index.
 };
 
 
-inline ostream& operator<<( ostream& os, const Cell& cell )
+inline std::ostream& operator<<( std::ostream& os, const Cell& cell )
 {
     const Cell::CandidateContainer& candidates = cell.candidates();
-    Cell::CandidateContainer::const_iterator it = candidates.begin();
-    const Cell::CandidateContainer::const_iterator endIt = candidates.end();
 
-    if( it != endIt )
+    bool first = true;
+    for( const char candidate : candidates )
     {
-	os << *it;
-        ++it;
-    }
-
-    for( ; it != endIt; ++it )
-    {
-        os << ',' << *it; 
+        if( !first )
+        {
+            os << ',';
+        }
+        os << candidate;
+        first = false;
     }
 
     // Put on any extra padding
-    for( unsigned int padIndex = 0; padIndex != 18 - 2 * candidates.size(); ++padIndex )
-    {
-        os << ' ';
-    }
+    os << std::string( 18 - 2 * candidates.size(), ' ' );
 
     return os;
 }

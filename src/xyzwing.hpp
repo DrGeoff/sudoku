@@ -1,5 +1,5 @@
 /*
- *  xyzwing.hpp
+ * xyzwing.hpp
  *  sudoku
  *
  *  Created by Geoffery Ericksson on 2/06/10.
@@ -10,53 +10,52 @@
 #ifndef XYZWING_HPP_20100602
 #define XYZWING_HPP_20100602
 
-#include <vector>
-using std::vector;
-
-#include <iterator>
-using std::back_inserter;
-
 #include <algorithm>
-using std::set_difference;
-
+#include <cassert>
+#include <cstddef>
+#include <iterator>
 #include <set>
-using std::set;
-#include "grid.hpp"
-#include "constraintregion.hpp"
+#include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
+
 #include "cell.hpp"
+#include "constraintregion.hpp"
+#include "grid.hpp"
 
 namespace Sudoku {
 
 	
 struct XYZWing 
 {
-	const char* name() const { return "XYZ Wing"; }
-	static const bool usesGrid = true;
+	std::string_view name() const { return "XYZ Wing"; }
+	inline static constexpr bool usesGrid = true;
 	
 	// Only call this with squares.
-	void operator()( ConstraintRegion& cr, Grid& grid, set<Cell*>& changedCells, set<Cell*>& explanatoryCells, string& explanation )
+	void operator()( ConstraintRegion& cr, Grid& grid, std::set<Cell*>& changedCells, std::set<Cell*>& explanatoryCells, std::string& explanation )
 	{
-		assert( Constraint::calculateType(cr) == Constraint::square );
+		assert( Constraint::calculateType(cr) == Constraint::Type::square );
 		
-		Cell* pXYZCell = 0;
+		Cell* pXYZCell = nullptr;
 		while( (pXYZCell = findXYZ( cr, pXYZCell )) )
 		{
 			// Without loss of generality we can impose the condition that the XZ cell lies in the same square as the XYZ cell
-			Cell* pXZCell = 0;
+			Cell* pXZCell = nullptr;
 			while( (pXZCell = findXZ( cr, pXYZCell, pXZCell )) )
 			{
 				// The YZ cell must now _not_ be in the same square as the XYZ cell (if it was this would be a locked triple instead)
-				Cell* pYZCell = 0;
+				Cell* pYZCell = nullptr;
 				while( (pYZCell = findYZ( grid, pXYZCell, pXZCell, pYZCell )) )
 				{
 					// Figure out the actual value of Z
-					vector< char > intersection;
-					set_intersection( pXZCell->candidates().begin(), pXZCell->candidates().end(), pYZCell->candidates().begin(), pYZCell->candidates().end(), back_inserter(intersection) );
+					std::vector< char > intersection;
+					std::set_intersection( pXZCell->candidates().begin(), pXZCell->candidates().end(), pYZCell->candidates().begin(), pYZCell->candidates().end(), std::back_inserter(intersection) );
 					assert( intersection.size() == 1 );
 					const char candidateZ = intersection[0];
 					
 					// eliminate Z in the intersection of the square and row/column of YZ
-					ostringstream oss;
+					std::ostringstream oss;
 					oss << "XYZ wing composed of XYZ ";
 					pXYZCell->writeCellLocationInformation(oss);
 					pXYZCell->writeCandidateValues(oss);
@@ -65,12 +64,12 @@ struct XYZWing
 					pXZCell->writeCandidateValues(oss);
 					oss << " YZ ";
 					pYZCell->writeCellLocationInformation(oss);
-					pYZCell->writeCandidateValues(oss) << "\n";
+					pYZCell->writeCandidateValues(oss) << '\n';
 					
-					set<const Cell*> preserveCells;
+					std::set<const Cell*> preserveCells;
 					preserveCells.insert( pXYZCell );
 					preserveCells.insert( pXZCell );					
-					Constraint::eliminate( pYZCell, grid.get( Constraint::square )[pXYZCell->square()], candidateZ, oss.str(), changedCells, explanatoryCells, explanation, preserveCells );
+					Constraint::eliminate( pYZCell, grid.get( Constraint::Type::square )[pXYZCell->square()], candidateZ, oss.str(), changedCells, explanatoryCells, explanation, preserveCells );
 				}
 			}
 		}
@@ -87,25 +86,26 @@ private:
 		char candidateY = 0; // This is easily determined as the value _not_ in the 
 		char candidate3 = *pXZCell->candidates().rbegin();
 		
-		vector< char > difference;
-		set_difference( pXYZCell->candidates().begin(), pXYZCell->candidates().end(), pXZCell->candidates().begin(), pXZCell->candidates().end(), back_inserter(difference) );
+		std::vector< char > difference;
+		std::set_difference( pXYZCell->candidates().begin(), pXYZCell->candidates().end(), pXZCell->candidates().begin(), pXZCell->candidates().end(), std::back_inserter(difference) );
 		assert( difference.size() == 1 );
 		candidateY = difference[0];
 		
 		// Need to search the row and column that the XYZ cell occupies
-		for( Constraint::Type crType = static_cast<Constraint::Type>(0); crType != Constraint::square; crType = static_cast<Constraint::Type>(crType + 1) )
+		for( int t = 0; t != static_cast<int>(Constraint::Type::square); ++t )
 		{
+			const Constraint::Type crType = static_cast<Constraint::Type>(t);
 			// If the previous pYZCell comes from being found in a column then fastforward onto checking columns
-			if( pYZCell && (crType == Constraint::row) && (pYZCell->column() == pXYZCell->column()) )
+			if( pYZCell && (crType == Constraint::Type::row) && (pYZCell->column() == pXYZCell->column()) )
 			{
-				crType = static_cast<Constraint::Type>(crType + 1);
+				continue;
 			}
 			
 			ConstraintRegion cr = grid.get(crType)[ pXYZCell->index(crType) ];			
 			ConstraintRegion::iterator crIt = cr.begin();
 			
 			// If we have already tested a YZ from the row/column that we are about to search through then fast-forward crIt to start at pYZCell
-			if( pYZCell && (find(cr.begin(), cr.end(), pYZCell) != cr.end() ) )
+			if( pYZCell && std::ranges::contains( cr, pYZCell ) )
 			{
 				while( (*crIt) != pYZCell && crIt != cr.end() )
 				{
@@ -121,11 +121,10 @@ private:
 			{
 				const Cell::CandidateContainer currentCandidates = (*crIt)->candidates();
 				if( currentCandidates.size() == 2
-				   && find( currentCandidates.begin(), currentCandidates.end(), candidateY ) != currentCandidates.end() )
+				   && std::ranges::contains( currentCandidates, candidateY ) )
 				{
-					// << "Candidates is 2 and candidateY " << candidateY << " is in candidates." << endl;
-					if( find( currentCandidates.begin(), currentCandidates.end(), candidate1 ) != currentCandidates.end()
-					   || find( currentCandidates.begin(), currentCandidates.end(), candidate3 ) != currentCandidates.end() )
+					if( std::ranges::contains( currentCandidates, candidate1 )
+					   || std::ranges::contains( currentCandidates, candidate3 ) )
 					{
 						// The YZ cell must now _not_ be in the same square as the XYZ cell (if it was this would be a locked triple instead)
 						if( (*crIt)->square() != pXYZCell->square() )
@@ -136,14 +135,14 @@ private:
 				}
 			}														
 		}
-		return 0;
+		return nullptr;
 	}
 	
 	Cell* findXZ( ConstraintRegion& cr, const Cell* pXYZCell, const Cell* pXZCell  )  
 	{
 		ConstraintRegion::iterator crIt = cr.begin();
 		
-		if( pXZCell != 0 )
+		if( pXZCell != nullptr )
 		{
 			while( (*crIt) != pXZCell && crIt != cr.end() )
 			{
@@ -151,7 +150,7 @@ private:
 			}
 			if( crIt == cr.end() )
 			{
-				return 0;					
+				return nullptr;					
 			}
 			++crIt;
 		}
@@ -160,20 +159,20 @@ private:
 		{
 			// First find a cell containing an XZ
 			if( (*crIt)->candidates().size() == 2
-			   && includes( pXYZCell->candidates().begin(), pXYZCell->candidates().end(), (*crIt)->candidates().begin(), (*crIt)->candidates().end() )
+			   && std::includes( pXYZCell->candidates().begin(), pXYZCell->candidates().end(), (*crIt)->candidates().begin(), (*crIt)->candidates().end() )
 			  )
 			{
 				return *crIt;
 			}
 		}
-		return 0;
+		return nullptr;
 	}
 	
 	Cell* findXYZ( ConstraintRegion& cr, const Cell* pXYZCell ) 
 	{
 		ConstraintRegion::iterator crIt = cr.begin();
 
-		if( pXYZCell != 0 )
+		if( pXYZCell != nullptr )
 		{
 			while( (*crIt) != pXYZCell && crIt != cr.end() )
 			{
@@ -181,7 +180,7 @@ private:
 			}
 			if( crIt == cr.end() )
 			{
-				return 0;					
+				return nullptr;					
 			}
 			++crIt;
 		}
@@ -195,7 +194,7 @@ private:
 			}
 		}
 		
-		return 0;
+		return nullptr;
 	}
 };
 	

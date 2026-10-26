@@ -9,20 +9,17 @@
 #ifndef COMBINATOR_HPP_20100404
 #define COMBINATOR_HPP_20100404
 
-#include <vector>
-using std::vector;
-
 #include <cassert>
-
-//#include<iostream>  // only for debugging
+#include <cstddef>
+#include <vector>
 
 namespace Sudoku {
 
-// For a given container, create the possible combinations
+// For a given container, create the possibly combinations
 template <typename PossibilitiesValueType >
 struct Combinator
 {
-	Combinator( const vector<PossibilitiesValueType>& possibilities, const std::size_t numberOfChoices ) 
+	Combinator( const std::vector<PossibilitiesValueType>& possibilities, std::size_t numberOfChoices ) 
 	    : possibilities_(possibilities)
 	    , numberOfChoices_(numberOfChoices)
 	    , currentIndexes_() 
@@ -44,7 +41,7 @@ struct Combinator
 		return result;
 	}
 	
-	vector<PossibilitiesValueType> first()
+	std::vector<PossibilitiesValueType> first()
 	{
 		currentIndexes_.clear();
 		for( std::size_t loop = 0; loop < numberOfChoices_; ++loop )
@@ -55,7 +52,7 @@ struct Combinator
 		return createCurrentCombination();
 	}
 	
-	vector<PossibilitiesValueType> next()
+	std::vector<PossibilitiesValueType> next()
 	{
 		if(currentIndexes_.empty())
 		{
@@ -68,7 +65,7 @@ struct Combinator
 			// 0 1 2, 0 1 3, 0 1 4, 0 2 3, 0 2 4, 0 3 4, 1 2 3, 1 2 4, 1 3 4, 2 3 4
 			
 			// Find an iterator to the left-most element that must change
-			vector<std::size_t>::reverse_iterator rit = currentIndexes_.rbegin();
+			auto rit = currentIndexes_.rbegin();
 			std::size_t rIndex = 0;  // A reverse index corresponding to the reverse iterator
 			
 			// This line is tricky. To demystify, note in the above example that the middle element has a maximum value of 3.
@@ -89,25 +86,23 @@ struct Combinator
 	}
 
 private:
-	vector<PossibilitiesValueType> createCurrentCombination() const
+	std::vector<PossibilitiesValueType> createCurrentCombination() const
 	{
-		vector<PossibilitiesValueType> result;
+		std::vector<PossibilitiesValueType> result;
 		for( std::size_t loop = 0; loop < numberOfChoices_; ++loop )
 		{
 			result.push_back(possibilities_[currentIndexes_[loop]]);
-			//cout << loop << ' ' << possibilities_[currentIndexes_[loop]] << endl;
 		}
 		assert( result.size() == numberOfChoices_ );
 		return result;							
 	}
 	
 private:
-	const vector<PossibilitiesValueType>& possibilities_;
+	const std::vector<PossibilitiesValueType>& possibilities_;
 	const std::size_t numberOfChoices_;
-	vector< std::size_t > currentIndexes_;  // Keep track of what indexes into possibilities the current combination is using.
+	std::vector< std::size_t > currentIndexes_;  // Keep track of what indexes into possibilities the current combination is using.
 };
-							 
-							 
+
 } // namespace Sudoku
 
 #endif // COMBINATOR_HPP_20100404

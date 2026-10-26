@@ -9,11 +9,11 @@
 #define UNIQUEPERCONSTRAINTREGION_HPP_20100327
 
 #include <set>
-using std::set;
-
 #include <sstream>
-using std::ostringstream;
+#include <string>
+#include <string_view>
 
+#include "cell.hpp"
 #include "constraintregion.hpp"
 
 
@@ -21,26 +21,26 @@ namespace Sudoku {
 
 struct UniquePerConstraintRegion 
 {
-	const char* name() const { return "Unique Per Constraint Region"; }
-	static const bool usesGrid = false;
+	std::string_view name() const { return "Unique Per Constraint Region"; }
+	inline static constexpr bool usesGrid = false;
 	
 	// If the set of candidates contains only one element then we can remove that element from all other candidates in the constraint region
-	void operator()( ConstraintRegion& cr, set<Cell*>& changedCells, set<Cell*>& explanatoryCells, string& explanation )
+	void operator()( ConstraintRegion& cr, std::set<Cell*>& changedCells, std::set<Cell*>& explanatoryCells, std::string& explanation )
 	{
 		// Check if a cell has only one element
-		for( ConstraintRegion::iterator crIt = cr.begin(); crIt != cr.end(); ++crIt )
+		for( Cell* cell : cr )
 		{
-			if( (*crIt)->candidates().size() == 1 )
+			if( cell->candidates().size() == 1 )
 			{
 				// Found a final value in a cell, so remove that value from all other constraint regions				
-				set<Cell*> preserveCells; 
-				preserveCells.insert( *crIt );
-				const bool didWork = Constraint::eliminate( cr, (*crIt)->value(), changedCells, preserveCells );
+				std::set<Cell*> preserveCells; 
+				preserveCells.insert( cell );
+				const bool didWork = Constraint::eliminate( cr, cell->value(), changedCells, preserveCells );
 				if( didWork )
 				{
-					explanatoryCells.insert(*crIt);
-					ostringstream oss;
-					oss << "Since cell " << (*crIt)->index() << " has the value " << (*crIt)->value() 
+					explanatoryCells.insert(cell);
+					std::ostringstream oss;
+					oss << "Since cell " << cell->index() << " has the value " << cell->value() 
 					    << " we can remove that value from all other candidates in " 
 					    << Constraint::typeToStr( Constraint::calculateType(cr) ) << " " << Constraint::calculateConstantIndex(cr) << '\n';
 					explanation += oss.str();					

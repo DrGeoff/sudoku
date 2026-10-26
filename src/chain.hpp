@@ -10,36 +10,43 @@
 #ifndef CHAIN_HPP_20100523
 #define CHAIN_HPP_20100523
 
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <string>
+#include <vector>
+
+#include "cell.hpp"
 
 namespace Sudoku {
 
-typedef vector< Cell* > Chain;	
+using Chain = std::vector< Cell* >;	
 	
 
-ostream& writeRawChain( ostream& os, const Chain& chain, const string& preamble )
+std::ostream& writeRawChain( std::ostream& os, const Chain& chain, const std::string& preamble )
 {
 	os << preamble;
-	copy( chain.begin(), chain.end(), std::ostream_iterator<Cell*>(os) );	
+	std::copy( chain.begin(), chain.end(), std::ostream_iterator<Cell*>(os) );	
 	return os;
 }
 
-ostream& writeChain( ostream& os, const Chain& chain, const string& preamble = string() )
+std::ostream& writeChain( std::ostream& os, const Chain& chain, const std::string& preamble = std::string() )
 {
 	os << preamble;
-	for( Chain::const_iterator it = chain.begin(); it != chain.end(); ++it )
+	for( const Cell* cell : chain )
 	{
-		(*it)->writeCellShortLocationInformation(os);
+		cell->writeCellShortLocationInformation(os);
 	}	
 	return os;
 }
 
-ostream& writeChainWithValues( ostream& os, const Chain& chain, const string& preamble = string() )
+std::ostream& writeChainWithValues( std::ostream& os, const Chain& chain, const std::string& preamble = std::string() )
 {
 	os << preamble;
-	for( Chain::const_iterator it = chain.begin(); it != chain.end(); ++it )
+	for( const Cell* cell : chain )
 	{
-		(*it)->writeCellShortLocationInformation(os);
-		(*it)->writeCandidateValues(os);
+		cell->writeCellShortLocationInformation(os);
+		cell->writeCandidateValues(os);
 	}	
 	return os;
 }
@@ -50,18 +57,18 @@ bool identicalChain( Chain chain0_clone, Chain chain1_clone, bool print=false )
 {
 	if( chain0_clone.size() == chain1_clone.size() )
 	{
-		sort(chain0_clone.begin(), chain0_clone.end());
-		sort(chain1_clone.begin(), chain1_clone.end());
+		std::sort(chain0_clone.begin(), chain0_clone.end());
+		std::sort(chain1_clone.begin(), chain1_clone.end());
 		
 		if(print)
 		{
-			writeChain( cout, chain0_clone, "Chain 0 clone : ");
-			writeChain( cout, chain1_clone, "Chain 1 clone : ");
+			writeChain( std::cout, chain0_clone, "Chain 0 clone : " );
+			writeChain( std::cout, chain1_clone, "Chain 1 clone : " );
 		}
 		
-		if ( equal(chain0_clone.begin(), chain0_clone.end(), chain1_clone.begin() ) )
+		if ( chain0_clone == chain1_clone )
 		{
-			if(print){ cout << "Chains are circular.  Found locked pair or a longer circular chain." << endl; }
+			if(print){ std::cout << "Chains are circular.  Found locked pair or a longer circular chain." << '\n'; }
 			return true; 	
 		}
 	}

@@ -4,18 +4,14 @@
 #include "cell.hpp"
 #include "constraintregion.hpp"
 
-#include <iosfwd> 
-using std::ostream;
-
-#include <string>
-using std::string;
-
-#include <vector>
-using std::vector;
-
+#include <cstddef>
 #include <fstream>
-using std::ifstream;
-using std::ofstream;
+#include <format>
+#include <iosfwd>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 
 
@@ -78,65 +74,80 @@ struct Grid
         }
     }
 	
-	void parse( const string& filename )
+	void parse( const std::string& filename )
 	{
-		if( *filename.rbegin() == 'v' )
+		if( filename.ends_with('v') )
 		{
 			parseCSV( filename );			
 		}
-		else if( *filename.rbegin() == 'k' )
+		else if( filename.ends_with('k') )
 		{
 			parseSDK( filename );
 		}
-		else throw "Unparsable file format";
+		else
+		{
+			throw std::runtime_error( std::format( "unrecognised puzzle file format '{}': the file name must end in '.k' (SDK) or '.v' (CSV)", filename ) );
+		}
 	}
 	
-	void parseSDK( const string& filename )
+	void parseSDK( const std::string& filename )
 	{
-		ifstream ifs( filename.c_str() );
+		std::ifstream ifs( filename );
+		if( !ifs )
+		{
+			throw std::runtime_error( std::format( "cannot open puzzle file '{}'", filename ) );
+		}
 		std::string line;
 		std::size_t index = 0;
 		
 		// Extract a single line from the file
-		while( getline( ifs,line ) && index < 81 ) 
+		while( std::getline( ifs,line ) && index < 81 ) 
 		{	
-			if( *line.begin() == '#' || *line.begin() == '[' ) 
+			if( line.starts_with('#') || line.starts_with('[') ) 
 			{
 				continue;
 			}
 			
-			for( std::string::const_iterator it = line.begin(); it != line.end(); ++it )
+			for( const char c : line )
 			{
-				if( *it == '\r' || *it == ' ' || *it == '\t' )
+				if( c == '\r' || c == ' ' || c == '\t' )
 				{
 					continue;
 				}
-				if( *it != '.'  )
+				if( c != '.'  )
 				{
-					cells[index++].initial( *it );		
+					cells[index++].initial( c );		
 				}
 				else
 				{
 					++index;
 				}				
 			}
-		}		
+		}
+		if( index != 81 )
+		{
+			throw std::runtime_error( std::format( "puzzle file '{}' contains {} cells, expected 81", filename, index ) );
+		}
 	}
 
-	void parseCSV( const string& filename )
+	void parseCSV( const std::string& filename )
 	{
-		ifstream ifs( filename.c_str() );
+		std::ifstream ifs( filename );
+		if( !ifs )
+		{
+			throw std::runtime_error( std::format( "cannot open puzzle file '{}'", filename ) );
+		}
 		std::string line;
 		std::size_t index = 0;
 		
 		// Extract a single line from the file
-		while( getline( ifs,line ) && index < 81 ) 
+		while( std::getline( ifs,line ) && index < 81 ) 
 		{		
 			// Extract the ',' delimited elements from the file
-			istringstream iss(line);
+			std::istringstream iss(line);
 			std::string element;
 			
-			while( getline( iss, element, ',' ) )
+			while( std::getline( iss, element, ',' ) )
 			{
 				if( !element.empty() && !(element[0]=='0') )
 				{
@@ -148,11 +159,19 @@ struct Grid
 				}
 			}
 		}
+		if( index != 81 )
+		{
+			throw std::runtime_error( std::format( "puzzle file '{}' contains {} cells, expected 81", filename, index ) );
+		}
 	}
 	
-	void writeCSV( const string& filename )
+	void writeCSV( const std::string& filename )
 	{
-		ofstream fout( filename.c_str() );
+		std::ofstream fout( filename );
+		if( !fout )
+		{
+			throw std::runtime_error( std::format( "cannot open solution file '{}' for writing", filename ) );
+		}
 		for( std::size_t rowIndex = 0; rowIndex != 9; ++rowIndex )
 		{
 			for( std::size_t colIndex = 0; colIndex != 8; ++colIndex )
@@ -161,77 +180,72 @@ struct Grid
 			}
 			fout << rows[rowIndex][8]->value()<< '\n';
 		}
+		fout.flush();
+		if( !fout )
+		{
+			throw std::runtime_error( std::format( "failed to write solution file '{}'", filename ) );
+		}
 	}
 	
-	vector<ConstraintRegion>& get( const Constraint::Type type )
+	std::vector<ConstraintRegion>& get( Constraint::Type type )
 	{
 		switch( type )
 		{
-			case Constraint::row:
+			case Constraint::Type::row:
 				return rows;
-				break;
-			case Constraint::column:
+			case Constraint::Type::column:
 				return columns;
-				break;
-			case Constraint::square:
+			case Constraint::Type::square:
 				return squares;
-				break;
 			default:
-				throw;
 				break;
 		}
+		throw std::logic_error( "unknown constraint type" );
 	}
 
-	const vector<ConstraintRegion>& get( const Constraint::Type type ) const
+	const std::vector<ConstraintRegion>& get( Constraint::Type type ) const
 	{
 		switch( type )
 		{
-			case Constraint::row:
+			case Constraint::Type::row:
 				return rows;
-				break;
-			case Constraint::column:
+			case Constraint::Type::column:
 				return columns;
-				break;
-			case Constraint::square:
+			case Constraint::Type::square:
 				return squares;
-				break;
 			default:
-				throw;
 				break;
 		}
+		throw std::logic_error( "unknown constraint type" );
 	}
 	
 	Cell* get( std::size_t row_index, std::size_t column_index )
 	{
-		vector<Cell*>& row = get( Constraint::row )[row_index];
+		std::vector<Cell*>& row = get( Constraint::Type::row )[row_index];
 		return row[column_index];
 	}
 	
 	const Cell* get( std::size_t row_index, std::size_t column_index ) const
 	{
-		const vector<Cell*>& row = get( Constraint::row )[row_index];
+		const std::vector<Cell*>& row = get( Constraint::Type::row )[row_index];
 		return row[column_index];
 	}
 	
 	
-    vector<Cell> cells;
-    vector<ConstraintRegion> rows;
-    vector<ConstraintRegion> columns;
-    vector<ConstraintRegion> squares;
+    std::vector<Cell> cells;
+    std::vector<ConstraintRegion> rows;
+    std::vector<ConstraintRegion> columns;
+    std::vector<ConstraintRegion> squares;
 };
 
 
-ostream& operator<<( ostream& os, const Grid& grid )
+std::ostream& operator<<( std::ostream& os, const Grid& grid )
 {
 	for( std::size_t rowIndex = 0; rowIndex != 9; ++rowIndex )
 	{
 		if(rowIndex%3 == 0)
 		{
-			for(std::size_t loop = 0; loop < 178; ++loop)
-			{
-				os << '-';
-			}
-			os << '\n';
+			os << std::string(178, '-') << '\n';
 		}
 
 		for( std::size_t colIndex = 0; colIndex != 9; ++colIndex )
@@ -248,4 +262,3 @@ ostream& operator<<( ostream& os, const Grid& grid )
 } // namespace Sudoku
 
 #endif
-
