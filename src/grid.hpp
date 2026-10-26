@@ -1,5 +1,4 @@
-#ifndef GRID_HPP_20100327
-#define GRID_HPP_20100327
+#pragma once
 
 #include "cell.hpp"
 #include "constraintregion.hpp"
@@ -261,4 +260,3 @@ std::ostream& operator<<( std::ostream& os, const Grid& grid )
 
 } // namespace Sudoku
 
-#endif

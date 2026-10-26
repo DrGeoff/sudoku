@@ -5,8 +5,7 @@
  *  Created by Geoffery Ericksson on 14/05/10.
  *
  */
-#ifndef MULTIVALUECHAINS_HPP_20100514
-#define MULTIVALUECHAINS_HPP_20100514
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -197,4 +196,3 @@ private:
 
 } // namespace Sudoku
 
-#endif //MULTIVALUECHAINS_HPP_20100514

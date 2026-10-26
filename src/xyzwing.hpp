@@ -7,8 +7,7 @@
  */
 
 
-#ifndef XYZWING_HPP_20100602
-#define XYZWING_HPP_20100602
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -200,4 +199,3 @@ private:
 	
 } // namespace Sudoku 
 
-#endif // XYZWING_HPP_20100602

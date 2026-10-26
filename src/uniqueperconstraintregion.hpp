@@ -5,8 +5,7 @@
  *      Author: geoff
  */
 
-#ifndef UNIQUEPERCONSTRAINTREGION_HPP_20100327
-#define UNIQUEPERCONSTRAINTREGION_HPP_20100327
+#pragma once
 
 #include <set>
 #include <sstream>
@@ -53,4 +52,3 @@ struct UniquePerConstraintRegion
 } // namespace Sudoku
 
 
-#endif /* UNIQUEPERCONSTRAINTREGION_HPP_ */

@@ -1,5 +1,4 @@
-#ifndef CONSTRAINTREGION_HPP_20100327
-#define CONSTRAINTREGION_HPP_20100327
+#pragma once
 
 #include <iosfwd>
 
@@ -95,4 +94,3 @@ struct Constraint
 } // namespace Sudoku
 
 
-#endif

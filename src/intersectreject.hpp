@@ -5,8 +5,7 @@
  *      Author: geoff
  */
 
-#ifndef INTERSECTREJECT_HPP_2010331
-#define INTERSECTREJECT_HPP_2010331
+#pragma once
 
 #include <cassert>
 #include <cstddef>
@@ -206,4 +205,3 @@ private:
 
 } // namespace Sudoku
 
-#endif /* INTERSECTREJECT_HPP_2010331*/

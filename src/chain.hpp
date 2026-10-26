@@ -7,8 +7,7 @@
  *
  */
 
-#ifndef CHAIN_HPP_20100523
-#define CHAIN_HPP_20100523
+#pragma once
 
 #include <algorithm>
 #include <iostream>
@@ -78,4 +77,3 @@ bool identicalChain( Chain chain0_clone, Chain chain1_clone, bool print=false )
 	
 }
 
-#endif

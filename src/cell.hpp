@@ -1,5 +1,4 @@
-#ifndef CELL_H_20100327
-#define CELL_H_20100327
+#pragma once
 
 #include <list>
 
@@ -157,4 +156,3 @@ inline std::ostream& operator<<( std::ostream& os, const Cell& cell )
 } // namespace Sudoku
 
 
-#endif

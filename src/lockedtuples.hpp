@@ -1,5 +1,4 @@
-#ifndef LOCKEDTUPLES_HPP_20100328
-#define LOCKEDTUPLES_HPP_20100328
+#pragma once
 
 #include <cstddef>
 #include <set>
@@ -83,4 +82,3 @@ struct LockedTuples
 
 } // namespace Sudoku
 
-#endif

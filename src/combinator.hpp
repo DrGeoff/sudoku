@@ -6,8 +6,7 @@
  *
  */
 
-#ifndef COMBINATOR_HPP_20100404
-#define COMBINATOR_HPP_20100404
+#pragma once
 
 #include <cassert>
 #include <cstddef>
@@ -105,4 +104,3 @@ private:
 
 } // namespace Sudoku
 
-#endif // COMBINATOR_HPP_20100404

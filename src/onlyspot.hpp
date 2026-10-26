@@ -5,8 +5,7 @@
  *  Created by Geoffery Ericksson on 29/03/10.
  *
  */
-#ifndef ONLYSPOT_HPP_20100329
-#define ONLYSPOT_HPP_20100329
+#pragma once
 
 #include <algorithm>
 #include <cstddef>
@@ -66,4 +65,3 @@ struct OnlySpot
 	
 } // namespace Sudoku
 
-#endif

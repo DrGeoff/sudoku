@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# ct-cake build artefacts (derived — do not commit)
+bin/
+cas-objdir/
+cas-exedir/
+.cache/
+compile_commands*.json
+compile_commands*.json.lock

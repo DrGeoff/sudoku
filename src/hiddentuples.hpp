@@ -5,8 +5,7 @@
  *      Author: geoff
  */
 
-#ifndef HIDDENTUPLES_HPP_2010331
-#define HIDDENTUPLES_HPP_2010331
+#pragma once
 
 #include <algorithm>
 #include <cstddef>
@@ -140,4 +139,3 @@ struct HiddenTuples
 
 } // namespace Sudoku
 
-#endif /* HIDDENTUPLES_HPP_2010331 */

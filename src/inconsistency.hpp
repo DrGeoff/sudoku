@@ -6,8 +6,7 @@
  *
  */
 
-#ifndef INCONSISTENCY_HPP_20100415
-#define INCONSISTENCY_HPP_20100415
+#pragma once
 
 #include <cstddef>
 #include <set>
@@ -71,4 +70,3 @@ private:
 
 } // namespace Sudoku
 
-#endif //INCONSISTENCY_HPP_20100415

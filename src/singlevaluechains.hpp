@@ -5,8 +5,7 @@
  *  Created by Geoffery Ericksson on 16/05/10.
  *
  */
-#ifndef SINGLEVALUECHAINS_HPP_20100516
-#define SINGLEVALUECHAINS_HPP_20100516
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -180,4 +179,3 @@ private:
 
 } // namespace Sudoku
 
-#endif //SINGLEVALUECHAINS_HPP_20100514

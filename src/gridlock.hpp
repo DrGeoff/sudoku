@@ -5,8 +5,7 @@
  *  Created by Geoffery Ericksson on 15/04/10.
  *
  */
-#ifndef GRIDLOCK_HPP_20100415
-#define GRIDLOCK_HPP_20100415
+#pragma once
 
 #include <cassert>
 #include <cstddef>
@@ -172,4 +171,3 @@ private:
 
 } // namespace Sudoku
 
-#endif //GRIDLOCK_HPP_20100415
